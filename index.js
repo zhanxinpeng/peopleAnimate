@@ -29,7 +29,7 @@ const resetPeep = ({ stage, peep }) => {
   // 随机方向
   const direction = Math.random() > 0.5 ? 1 : -1;
   // using an ease function to skew random to lower values to help hide that peeps have no legs
-  // 偏移，以隐藏图片没有腿的事实
+  // 将随机数偏移到较小的值，以帮助隐藏人物没有腿的事实
   const offsetY = 100 - 250 * gsap.parseEase('power2.in')(Math.random());
   const startY = stage.height - peep.height + offsetY;
   let startX;
@@ -211,12 +211,14 @@ function resize() {
 
   crowd.length = 0;
   availablePeeps.length = 0;
+  // peep对象数组
   availablePeeps.push(...allPeeps);
 
   initCrowd();
 }
 
 function initCrowd() {
+  console.log('availablePeeps', availablePeeps.length);
   while (availablePeeps.length) {
     // setting random tween progress spreads the peeps out
     // 随机播放，让人物分散开
@@ -236,7 +238,7 @@ function addPeepToCrowd() {
       stage
     })
   }).eventCallback('onComplete', () => {
-    // 时间轴准备完毕
+    // 时间轴动画结束后，将人物从人群中删除，并重新添加人物
     removePeepFromCrowd(peep);
     addPeepToCrowd();
   });
@@ -251,8 +253,9 @@ function addPeepToCrowd() {
 }
 
 function removePeepFromCrowd(peep) {
-  // 从人群中删除已经创建好动画的人物
+  // 从人群动画数组删除已经播放完的人物
   removeItemFromArray(crowd, peep);
+  // 添加新的人物到可用数组中
   availablePeeps.push(peep);
 }
 
